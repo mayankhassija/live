@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Live Sandbox · Code Preview Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="logo-area">
+    <div class="logo">◉ LIVE SANDBOX</div>
+    <div class="badge">instant preview • HTML/CSS/JS</div>
+  </div>
+  <div class="actions">
+    <button id="runBtn" class="primary">
+      <i>▶</i> <span>Run & Preview</span>
+    </button>
+    <button id="resetDefaultBtn">
+      <i>⟳</i> <span>Reset Demo</span>
+    </button>
+    <button id="clearBtn">
+      <i>⌧</i> <span>Clear Editor</span>
+    </button>
+  </div>
+</div>
+
+<div class="split-container">
+  <div class="editor-panel">
+    <div class="panel-header">
+      <span>📝 HTML + CSS + JS (full document)</span>
+      <span class="lang-tag">live code</span>
+    </div>
+    <textarea id="codeEditor" spellcheck="false" placeholder="Write or paste your HTML/CSS/JS code here..."></textarea>
+  </div>
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span>🖥️ Live Preview — rendered as real webpage</span>
+      <span style="font-size: 0.7rem;">auto-updates on Run</span>
+    </div>
+    <div class="iframe-wrapper">
+      <iframe id="livePreview" title="live preview sandbox" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

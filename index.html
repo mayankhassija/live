@@ -3,45 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Live Sandbox · Multi-Mode Code Preview</title>
+  <title>Live Sandbox · Fullscreen Preview</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="toolbar">
-  <div class="logo-area">
-    <div class="logo">◉ LIVE SANDBOX</div>
-    <div class="badge">instant preview • HTML/CSS/JS</div>
-  </div>
-  <div class="mode-selector">
-    <button id="singleModeBtn" class="mode-btn active">
-      <i>📄</i> <span>Single HTML</span>
-    </button>
-    <button id="splitModeBtn" class="mode-btn">
-      <i>⚡</i> <span>Split (HTML + CSS + JS)</span>
-    </button>
-  </div>
-  <div class="actions">
-    <button id="runBtn" class="primary">
-      <i>▶</i> <span>Run & Preview</span>
-    </button>
-    <button id="resetDefaultBtn">
-      <i>⟳</i> <span>Load Example</span>
-    </button>
-    <button id="clearAllBtn">
-      <i>⌧</i> <span>Clear All</span>
-    </button>
-  </div>
-</div>
-
-<!-- Single HTML Editor Mode -->
-<div id="singleMode" class="mode-container active">
-  <div class="editor-panel full-editor">
-    <div class="panel-header">
-      <span>📝 HTML (includes CSS & JS)</span>
-      <span class="lang-tag">full document</span>
+<!-- Main App View (visible when editing) -->
+<div id="appView" class="app-view">
+  <div class="toolbar">
+    <div class="logo-area">
+      <div class="logo">◉ LIVE SANDBOX</div>
+      <div class="badge">instant preview • HTML/CSS/JS</div>
     </div>
-    <textarea id="singleEditor" spellcheck="false" placeholder='<!-- Write your complete HTML/CSS/JS code here -->
+    <div class="mode-selector">
+      <button id="singleModeBtn" class="mode-btn active">
+        <i>📄</i> <span>Single HTML</span>
+      </button>
+      <button id="splitModeBtn" class="mode-btn">
+        <i>⚡</i> <span>Split (HTML + CSS + JS)</span>
+      </button>
+    </div>
+    <div class="actions">
+      <button id="runFullscreenBtn" class="primary run-fullscreen">
+        <i>▶</i> <span>Run & Fullscreen Preview</span>
+      </button>
+      <button id="resetDefaultBtn">
+        <i>⟳</i> <span>Load Example</span>
+      </button>
+      <button id="clearAllBtn">
+        <i>⌧</i> <span>Clear All</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Single HTML Editor Mode -->
+  <div id="singleMode" class="mode-container active">
+    <div class="editor-panel full-editor">
+      <div class="panel-header">
+        <span>📝 HTML (includes CSS & JS)</span>
+        <span class="lang-tag">full document</span>
+      </div>
+      <textarea id="singleEditor" spellcheck="false" placeholder='<!-- Write your complete HTML/CSS/JS code here -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,82 +55,91 @@
 <body>
   <div class="card">
     <h1>Hello, World!</h1>
-    <button onclick="alert('Hi!')">Click me</button>
+    <button onclick="alert(\'Hi!\')">Click me</button>
   </div>
   <script>
     console.log("Ready!");
   </script>
 </body>
 </html>'></textarea>
+    </div>
   </div>
-</div>
 
-<!-- Split HTML/CSS/JS Mode -->
-<div id="splitMode" class="mode-container">
-  <div class="split-editors">
-    <div class="editor-panel">
-      <div class="panel-header">
-        <span>📄 HTML (structure)</span>
-        <span class="lang-tag">&lt;body&gt; content</span>
-      </div>
-      <textarea id="htmlEditor" spellcheck="false" placeholder='<!-- Your HTML structure here -->
-<div class="container">
-  <h1>Hello World</h1>
-  <button id="myButton">Click Me</button>
-  <p class="message"></p>
+  <!-- Split HTML/CSS/JS Mode -->
+  <div id="splitMode" class="mode-container">
+    <div class="split-editors">
+      <div class="editor-panel">
+        <div class="panel-header">
+          <span>📄 HTML (structure)</span>
+          <span class="lang-tag">&lt;body&gt; content</span>
+        </div>
+        <textarea id="htmlEditor" spellcheck="false" placeholder='<!-- Your HTML structure here -->
+<div class="password-container">
+  <input type="password" id="password" placeholder="Enter password">
+  <i id="togglePassword" class="fa-solid fa-eye-slash"></i>
 </div>'></textarea>
-    </div>
-    <div class="editor-panel">
-      <div class="panel-header">
-        <span>🎨 CSS (styling)</span>
-        <span class="lang-tag">styles</span>
       </div>
-      <textarea id="cssEditor" spellcheck="false" placeholder='/* Your CSS styles here */
-.container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 1rem;
-  color: white;
-  text-align: center;
+      <div class="editor-panel">
+        <div class="panel-header">
+          <span>🎨 CSS (styling)</span>
+          <span class="lang-tag">styles</span>
+        </div>
+        <textarea id="cssEditor" spellcheck="false" placeholder='/* Your CSS styles here */
+.password-container {
+  position: relative;
+  width: 300px;
+  margin: 50px auto;
 }
-button {
-  background: white;
-  border: none;
-  padding: 10px 20px;
+#password {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
   border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
 }
-button:hover {
-  transform: scale(1.05);
+#togglePassword {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
 }'></textarea>
-    </div>
-    <div class="editor-panel">
-      <div class="panel-header">
-        <span>⚡ JavaScript (logic)</span>
-        <span class="lang-tag">interactivity</span>
       </div>
-      <textarea id="jsEditor" spellcheck="false" placeholder='// Your JavaScript code here
-document.getElementById("myButton")?.addEventListener("click", () => {
-  const msg = document.querySelector(".message");
-  if (msg) msg.textContent = "Button clicked! 🎉";
-  console.log("Button was clicked");
+      <div class="editor-panel">
+        <div class="panel-header">
+          <span>⚡ JavaScript (logic)</span>
+          <span class="lang-tag">interactivity</span>
+        </div>
+        <textarea id="jsEditor" spellcheck="false" placeholder='// Your JavaScript code here
+const togglePassword = document.getElementById("togglePassword");
+const password = document.getElementById("password");
+
+togglePassword.addEventListener("click", function() {
+  const type = password.getAttribute("type") === "password" ? "text" : "password";
+  password.setAttribute("type", type);
+  this.classList.toggle("fa-eye");
+  this.classList.toggle("fa-eye-slash");
 });'></textarea>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Preview Panel -->
-<div class="preview-panel">
-  <div class="preview-header">
-    <span>🖥️ Live Preview — rendered as real webpage</span>
-    <span style="font-size: 0.7rem;">click Run to update</span>
+<!-- Fullscreen Preview View (visible after running) -->
+<div id="previewView" class="preview-view" style="display: none;">
+  <div class="preview-toolbar">
+    <button id="backToEditBtn" class="back-btn">
+      <i>←</i> <span>Back to Editor</span>
+    </button>
+    <div class="preview-title">Live Preview — Your Webpage</div>
+    <div class="preview-actions">
+      <button id="refreshPreviewBtn" class="refresh-btn">
+        <i>⟳</i> <span>Refresh</span>
+      </button>
+    </div>
   </div>
-  <div class="iframe-wrapper">
-    <iframe id="livePreview" title="live preview sandbox" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
+  <div class="preview-fullscreen">
+    <iframe id="livePreviewFull" title="live preview fullscreen" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
   </div>
 </div>
 

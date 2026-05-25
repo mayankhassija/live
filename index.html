@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Live Sandbox · Code Preview Studio</title>
+  <title>Live Sandbox · Multi-Mode Code Preview</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,35 +13,122 @@
     <div class="logo">◉ LIVE SANDBOX</div>
     <div class="badge">instant preview • HTML/CSS/JS</div>
   </div>
+  <div class="mode-selector">
+    <button id="singleModeBtn" class="mode-btn active">
+      <i>📄</i> <span>Single HTML</span>
+    </button>
+    <button id="splitModeBtn" class="mode-btn">
+      <i>⚡</i> <span>Split (HTML + CSS + JS)</span>
+    </button>
+  </div>
   <div class="actions">
     <button id="runBtn" class="primary">
       <i>▶</i> <span>Run & Preview</span>
     </button>
     <button id="resetDefaultBtn">
-      <i>⟳</i> <span>Reset Demo</span>
+      <i>⟳</i> <span>Load Example</span>
     </button>
-    <button id="clearBtn">
-      <i>⌧</i> <span>Clear Editor</span>
+    <button id="clearAllBtn">
+      <i>⌧</i> <span>Clear All</span>
     </button>
   </div>
 </div>
 
-<div class="split-container">
-  <div class="editor-panel">
+<!-- Single HTML Editor Mode -->
+<div id="singleMode" class="mode-container active">
+  <div class="editor-panel full-editor">
     <div class="panel-header">
-      <span>📝 HTML + CSS + JS (full document)</span>
-      <span class="lang-tag">live code</span>
+      <span>📝 HTML (includes CSS & JS)</span>
+      <span class="lang-tag">full document</span>
     </div>
-    <textarea id="codeEditor" spellcheck="false" placeholder="Write or paste your HTML/CSS/JS code here..."></textarea>
+    <textarea id="singleEditor" spellcheck="false" placeholder='<!-- Write your complete HTML/CSS/JS code here -->
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: system-ui; margin: 2rem; }
+    .card { padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello, World!</h1>
+    <button onclick="alert('Hi!')">Click me</button>
   </div>
-  <div class="preview-panel">
-    <div class="preview-header">
-      <span>🖥️ Live Preview — rendered as real webpage</span>
-      <span style="font-size: 0.7rem;">auto-updates on Run</span>
+  <script>
+    console.log("Ready!");
+  </script>
+</body>
+</html>'></textarea>
+  </div>
+</div>
+
+<!-- Split HTML/CSS/JS Mode -->
+<div id="splitMode" class="mode-container">
+  <div class="split-editors">
+    <div class="editor-panel">
+      <div class="panel-header">
+        <span>📄 HTML (structure)</span>
+        <span class="lang-tag">&lt;body&gt; content</span>
+      </div>
+      <textarea id="htmlEditor" spellcheck="false" placeholder='<!-- Your HTML structure here -->
+<div class="container">
+  <h1>Hello World</h1>
+  <button id="myButton">Click Me</button>
+  <p class="message"></p>
+</div>'></textarea>
     </div>
-    <div class="iframe-wrapper">
-      <iframe id="livePreview" title="live preview sandbox" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
+    <div class="editor-panel">
+      <div class="panel-header">
+        <span>🎨 CSS (styling)</span>
+        <span class="lang-tag">styles</span>
+      </div>
+      <textarea id="cssEditor" spellcheck="false" placeholder='/* Your CSS styles here */
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 1rem;
+  color: white;
+  text-align: center;
+}
+button {
+  background: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+button:hover {
+  transform: scale(1.05);
+}'></textarea>
     </div>
+    <div class="editor-panel">
+      <div class="panel-header">
+        <span>⚡ JavaScript (logic)</span>
+        <span class="lang-tag">interactivity</span>
+      </div>
+      <textarea id="jsEditor" spellcheck="false" placeholder='// Your JavaScript code here
+document.getElementById("myButton")?.addEventListener("click", () => {
+  const msg = document.querySelector(".message");
+  if (msg) msg.textContent = "Button clicked! 🎉";
+  console.log("Button was clicked");
+});'></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Preview Panel -->
+<div class="preview-panel">
+  <div class="preview-header">
+    <span>🖥️ Live Preview — rendered as real webpage</span>
+    <span style="font-size: 0.7rem;">click Run to update</span>
+  </div>
+  <div class="iframe-wrapper">
+    <iframe id="livePreview" title="live preview sandbox" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"></iframe>
   </div>
 </div>
 

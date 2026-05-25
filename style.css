@@ -1,0 +1,241 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1e1f2c;
+  font-family: 'Segoe UI', 'Fira Code', 'Monaco', 'Cascadia Code', monospace;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* toolbar header */
+.toolbar {
+  background: #0f0f1a;
+  padding: 12px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #2d2f3e;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.logo-area {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #a5f3ff, #6c5ce7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.badge {
+  background: #2d2f3e;
+  padding: 4px 10px;
+  border-radius: 60px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #cbd5ff;
+  font-family: monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  background: #2a2c3b;
+  border: none;
+  font-family: 'Segoe UI', monospace;
+  padding: 6px 16px;
+  border-radius: 40px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: #e2e8ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #3f4156;
+}
+
+button i {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+button.primary {
+  background: #5f4bdb;
+  border-color: #8275e6;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+button.primary:hover {
+  background: #745fd9;
+  transform: translateY(-1px);
+}
+
+button:hover {
+  background: #3c3e54;
+  border-color: #5f6bb0;
+}
+
+/* main split container */
+.split-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+  background: #181926;
+}
+
+/* editor panel */
+.editor-panel {
+  flex: 1.2;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  background: #1a1b26;
+  border-right: 1px solid #2c2e3e;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+.panel-header {
+  background: #0f0f17;
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #b9c3e8;
+  border-bottom: 1px solid #2a2c3c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lang-tag {
+  background: #2d2f40;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-family: monospace;
+  font-size: 0.7rem;
+}
+
+textarea {
+  flex: 1;
+  background: #1e1f2e;
+  color: #f0f0f8;
+  border: none;
+  padding: 20px;
+  font-family: 'Fira Code', 'Cascadia Code', 'Menlo', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+textarea:focus {
+  background: #232433;
+  outline: 1px solid #5f4bdb30;
+}
+
+/* preview panel */
+.preview-panel {
+  flex: 1.8;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  background-color: #fefefe;
+}
+
+.preview-header {
+  background: #2c2d3a;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #3f4055;
+}
+
+.preview-header span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #cdd9ff;
+}
+
+.iframe-wrapper {
+  flex: 1;
+  background: white;
+  position: relative;
+  background: #f5f7fc;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+/* responsive */
+@media (max-width: 700px) {
+  .toolbar {
+    padding: 8px 16px;
+  }
+  button span:not(.icon-only) {
+    display: none;
+  }
+  button i {
+    margin-right: 0;
+  }
+  .actions button {
+    padding: 6px 12px;
+  }
+  .logo {
+    font-size: 1.2rem;
+  }
+}
+
+/* toast message */
+.toast-msg {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #2b2e47;
+  backdrop-filter: blur(10px);
+  background: #1f2137e6;
+  color: #e2e8ff;
+  padding: 8px 20px;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-left: 4px solid #6c5ce7;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 200;
+  transition: 0.2s;
+  pointer-events: none;
+  font-family: monospace;
+}

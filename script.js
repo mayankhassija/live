@@ -1,13 +1,17 @@
 (function() {
   // DOM Elements
+  const appView = document.getElementById('appView');
+  const previewView = document.getElementById('previewView');
   const singleModeBtn = document.getElementById('singleModeBtn');
   const splitModeBtn = document.getElementById('splitModeBtn');
   const singleMode = document.getElementById('singleMode');
   const splitMode = document.getElementById('splitMode');
-  const runBtn = document.getElementById('runBtn');
+  const runFullscreenBtn = document.getElementById('runFullscreenBtn');
+  const backToEditBtn = document.getElementById('backToEditBtn');
+  const refreshPreviewBtn = document.getElementById('refreshPreviewBtn');
   const resetDefaultBtn = document.getElementById('resetDefaultBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
-  const previewIframe = document.getElementById('livePreview');
+  const previewIframe = document.getElementById('livePreviewFull');
   
   // Editor elements
   const singleEditor = document.getElementById('singleEditor');
@@ -15,77 +19,65 @@
   const cssEditor = document.getElementById('cssEditor');
   const jsEditor = document.getElementById('jsEditor');
   
-  let currentMode = 'single'; // 'single' or 'split'
+  let currentMode = 'single';
+  let currentRenderedHTML = '';
   
-  // Example code for split mode (empty but informative)
-  const EXAMPLE_SPLIT_HTML = `<div class="modern-card">
-  <h1>✨ Interactive Demo</h1>
-  <p>This is a split-mode example. Edit HTML, CSS, and JavaScript separately!</p>
-  <button id="actionBtn">Click Me</button>
-  <div id="result" style="margin-top: 1rem; font-weight: bold;"></div>
+  // Example code for split mode
+  const EXAMPLE_SPLIT_HTML = `<div class="password-container">
+  <input type="password" id="password" placeholder="Enter password">
+  <i id="togglePassword" class="fa-solid fa-eye-slash"></i>
 </div>`;
   
-  const EXAMPLE_SPLIT_CSS = `.modern-card {
-  max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  color: white;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  font-family: system-ui, -apple-system, sans-serif;
+  const EXAMPLE_SPLIT_CSS = `.password-container {
+  position: relative;
+  width: 300px;
+  margin: 50px auto;
 }
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+#password {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
 }
-p {
-  line-height: 1.5;
-  opacity: 0.95;
+#password:focus {
+  border-color: #667eea;
 }
-button {
-  background: white;
-  color: #764ba2;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: bold;
+#togglePassword {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  margin-top: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  color: #666;
 }
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-#result {
-  margin-top: 1rem;
-  font-size: 1.1rem;
+#togglePassword:hover {
+  color: #667eea;
 }`;
   
-  const EXAMPLE_SPLIT_JS = `document.getElementById('actionBtn')?.addEventListener('click', function() {
-  const resultDiv = document.getElementById('result');
-  const clicks = (window.clickCount || 0) + 1;
-  window.clickCount = clicks;
-  resultDiv.innerHTML = '🎉 Button clicked ' + clicks + ' time' + (clicks === 1 ? '' : 's') + '!';
-  console.log('Button clicked', clicks);
-});`;
+  const EXAMPLE_SPLIT_JS = `const togglePassword = document.getElementById("togglePassword");
+const password = document.getElementById("password");
+
+if (togglePassword && password) {
+  togglePassword.addEventListener("click", function() {
+    const type = password.getAttribute("type") === "password" ? "text" : "password";
+    password.setAttribute("type", type);
+    this.classList.toggle("fa-eye");
+    this.classList.toggle("fa-eye-slash");
+  });
+}`;
   
-  // Example for single mode (complete HTML document)
+  // Example for single mode
   const EXAMPLE_SINGLE_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Single HTML Example</title>
+  <title>Password Toggle Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -93,67 +85,62 @@ button:hover {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      margin: 0;
     }
-    .card {
+    .password-container {
+      position: relative;
+      width: 320px;
       background: white;
+      padding: 40px;
       border-radius: 20px;
-      padding: 2rem;
-      max-width: 500px;
-      text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
-    h1 {
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
       color: #764ba2;
-      margin-bottom: 1rem;
     }
-    p {
-      color: #666;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
+    #password {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s;
     }
-    button {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-size: 1rem;
+    #password:focus {
+      border-color: #667eea;
+    }
+    #togglePassword {
+      position: absolute;
+      right: 52px;
+      top: 72px;
       cursor: pointer;
-      transition: transform 0.2s;
+      color: #666;
     }
-    button:hover {
-      transform: scale(1.05);
-    }
-    .counter {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      color: #764ba2;
-      font-weight: bold;
+    #togglePassword:hover {
+      color: #667eea;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🎨 Single HTML Mode</h1>
-    <p>This is a complete HTML document with embedded CSS and JavaScript.</p>
-    <button id="magicBtn">Click for Magic</button>
-    <div class="counter" id="counterDisplay">✨ Ready</div>
+  <div class="password-container">
+    <h2>Password Toggle</h2>
+    <input type="password" id="password" placeholder="Enter password">
+    <i id="togglePassword" class="fas fa-eye-slash"></i>
   </div>
   <script>
-    let count = 0;
-    const btn = document.getElementById('magicBtn');
-    const display = document.getElementById('counterDisplay');
+    const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
     
-    btn.addEventListener('click', () => {
-      count++;
-      display.innerHTML = '🎉 Clicked ' + count + ' time' + (count === 1 ? '' : 's') + '!';
-      if (count % 5 === 0) {
-        display.style.transform = 'scale(1.1)';
-        setTimeout(() => display.style.transform = 'scale(1)', 300);
-      }
+    togglePassword.addEventListener("click", function() {
+      const type = password.getAttribute("type") === "password" ? "text" : "password";
+      password.setAttribute("type", type);
+      this.classList.toggle("fa-eye");
+      this.classList.toggle("fa-eye-slash");
     });
-  </script>
+  <\/script>
 </body>
 </html>`;
   
@@ -179,8 +166,8 @@ button:hover {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Live Preview - Split Mode</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Reset & base styles */
     * {
       margin: 0;
       padding: 0;
@@ -188,17 +175,18 @@ button:hover {
     }
     body {
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: #f5f7fa;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    /* User CSS */
     ${cssContent}
   </style>
 </head>
 <body>
   ${htmlContent}
   <script>
-    // User JavaScript
     (function() {
       try {
         ${jsContent}
@@ -211,40 +199,64 @@ button:hover {
 </html>`;
   }
   
-  // Render preview based on current mode
-  function renderPreview() {
-    let fullHtml = '';
-    
+  // Generate HTML from current mode
+  function generateHTML() {
     if (currentMode === 'single') {
-      fullHtml = singleEditor.value;
-      // If it doesn't look like a full document, wrap it
-      const hasDocType = /<!DOCTYPE\s+html/i.test(fullHtml);
-      const hasHtmlTag = /<\s*html[\s>]/i.test(fullHtml);
-      if (!hasDocType && !hasHtmlTag) {
-        fullHtml = `<!DOCTYPE html>
+      let html = singleEditor.value;
+      const hasDocType = /<!DOCTYPE\s+html/i.test(html);
+      const hasHtmlTag = /<\s*html[\s>]/i.test(html);
+      if (!hasDocType && !hasHtmlTag && html.trim().length > 0) {
+        html = `<!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Live Preview</title><style>body { margin: 1rem; font-family: system-ui; }</style></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Preview</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>body { margin: 0; font-family: system-ui; }</style>
+</head>
 <body>
-${fullHtml}
+${html}
 </body>
 </html>`;
       }
+      return html;
     } else {
-      // Split mode: combine HTML, CSS, JS
       const htmlContent = htmlEditor.value || '<div style="padding:2rem; text-align:center;">✨ Enter HTML content</div>';
       const cssContent = cssEditor.value || '';
       const jsContent = jsEditor.value || '';
-      fullHtml = buildFromSplit(htmlContent, cssContent, jsContent);
+      return buildFromSplit(htmlContent, cssContent, jsContent);
     }
+  }
+  
+  // Run preview and switch to fullscreen view
+  function runFullscreenPreview() {
+    currentRenderedHTML = generateHTML();
     
     try {
-      previewIframe.srcdoc = fullHtml;
-      showMessage('✓ Preview updated', 1000);
+      previewIframe.srcdoc = currentRenderedHTML;
+      appView.style.display = 'none';
+      previewView.style.display = 'flex';
+      showMessage('✓ Fullscreen preview ready', 1000);
     } catch (err) {
       console.error(err);
       showMessage('⚠️ Error rendering preview', 2000);
-      previewIframe.srcdoc = '<body style="background:#fff;padding:2rem;"><h3>❌ Render Error</h3><p>Check your code syntax</p></body>';
     }
+  }
+  
+  // Refresh preview (useful for iframe reload)
+  function refreshPreview() {
+    if (currentRenderedHTML) {
+      previewIframe.srcdoc = currentRenderedHTML;
+      showMessage('⟳ Preview refreshed', 800);
+    }
+  }
+  
+  // Back to editor
+  function backToEditor() {
+    appView.style.display = 'flex';
+    previewView.style.display = 'none';
+    showMessage('✏️ Back to editing', 1000);
   }
   
   // Switch between single and split modes
@@ -262,22 +274,19 @@ ${fullHtml}
       singleModeBtn.classList.remove('active');
       splitModeBtn.classList.add('active');
     }
-    
-    renderPreview();
   }
   
   // Load example based on current mode
   function loadExample() {
     if (currentMode === 'single') {
       singleEditor.value = EXAMPLE_SINGLE_HTML;
-      showMessage('📚 Loaded single HTML example', 1200);
+      showMessage('📚 Loaded password toggle example', 1200);
     } else {
       htmlEditor.value = EXAMPLE_SPLIT_HTML;
       cssEditor.value = EXAMPLE_SPLIT_CSS;
       jsEditor.value = EXAMPLE_SPLIT_JS;
-      showMessage('📚 Loaded split-mode example (HTML+CSS+JS)', 1200);
+      showMessage('📚 Loaded password toggle example (split mode)', 1200);
     }
-    renderPreview();
   }
   
   // Clear all editors based on current mode
@@ -291,43 +300,41 @@ ${fullHtml}
       jsEditor.value = '';
       showMessage('🗑️ HTML, CSS, and JS cleared', 1000);
     }
-    renderPreview();
   }
   
-  // Initialize empty state
+  // Initialize
   function init() {
-    // Start empty in single mode
+    // Start with empty editors
     singleEditor.value = '';
     htmlEditor.value = '';
     cssEditor.value = '';
     jsEditor.value = '';
     
-    // Set initial mode
     setMode('single');
     
     // Event listeners
     singleModeBtn.addEventListener('click', () => setMode('single'));
     splitModeBtn.addEventListener('click', () => setMode('split'));
-    runBtn.addEventListener('click', renderPreview);
+    runFullscreenBtn.addEventListener('click', runFullscreenPreview);
+    backToEditBtn.addEventListener('click', backToEditor);
+    refreshPreviewBtn.addEventListener('click', refreshPreview);
     resetDefaultBtn.addEventListener('click', loadExample);
     clearAllBtn.addEventListener('click', clearAll);
     
-    // Keyboard shortcut: Ctrl+Enter / Cmd+Enter
+    // Keyboard shortcut: Ctrl+Enter runs preview
     const editors = [singleEditor, htmlEditor, cssEditor, jsEditor];
     editors.forEach(editor => {
       if (editor) {
         editor.addEventListener('keydown', (e) => {
           if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             e.preventDefault();
-            renderPreview();
+            runFullscreenPreview();
           }
         });
       }
     });
     
-    // Initial empty preview
-    renderPreview();
-    showMessage('✨ Ready! Choose mode and paste your code', 2000);
+    showMessage('✨ Ready! Write your code and click "Run & Fullscreen Preview"', 2500);
   }
   
   init();
